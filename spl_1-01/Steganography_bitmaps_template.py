@@ -106,9 +106,10 @@ def ButtonModeHideClick():
         file = open("Galaxien.bmp", "rb")
         file_content = list(file.read())
     except:
-        print("sth happend!!!!")
+        LabelModeFeedback["text"] = "Could not read the specific file or/and hasn't been converted to binary!"
     if file_content[0] != 66 and file_content[1] != 77:
-        print("PROBLEM")
+        LabelModeFeedback["text"] = "File is not a .bmp"
+        pass
     print(file_content[0:1])
     print(file_content[2:3])
     print(file_content[4:9])
