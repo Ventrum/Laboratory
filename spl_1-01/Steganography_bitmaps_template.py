@@ -117,8 +117,24 @@ def ButtonModeHideClick():
     bf_off_bits = file_content[10:14]
     print(bf_off_bits)
     # bitmapinfoheader 14:39
-    width = file_content[14:18]
-    height = file_content[18:22]
+    print(file_content[14:18])
+    width = file_content[18:22]
+    print(width)
+    height = file_content[22:26]
+    print(height)
+    print(file_content[26:28])
+    if file_content[28] != 24 or file_content[29] != 24:
+        pass
+    if file_content[30] == 0: # 30:33
+        pass
+    print(file_content[34:46])
+    if file_content[46] == 0: # 46:49
+        pass
+    print(file_content[50:54])
+    #bitMapInfoBody
+    
+
+
 
 
 # This function is invoked when the user presses
