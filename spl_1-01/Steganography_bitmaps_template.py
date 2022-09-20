@@ -107,7 +107,7 @@ def ButtonModeHideClick():
         file_content = list(file.read())
     except:
         LabelModeFeedback["text"] = "Could not read the specific file or/and hasn't been converted to binary!"
-    #bitmapfileheader 0:13
+    # bitmapfileheader 0:13
     if file_content[0] != 66 and file_content[1] != 77:
         LabelModeFeedback["text"] = "File is not a .bmp"
         pass
@@ -124,21 +124,29 @@ def ButtonModeHideClick():
     print(height)
     print(file_content[26:28])
     if file_content[28] != 24 or file_content[29] != 24:
-        LabelModeFeedback["text"] = "the bmp file is not a 24 bit bmp file, pls resave it!"
         pass
-    if file_content[30] == 0: # 30:33
-        print("ok")
-    else:
-        LabelModeFeedback["text"] = "Compression detected, we are not allowing compression!"
+    if file_content[30] == 0:  # 30:33
+        pass
     print(file_content[34:46])
-    if file_content[46] == 0: # 46:49
+    if file_content[46] == 0:  # 46:49
         pass
     print(file_content[50:54])
-    #bitMapInfoBody
-    #the secret stuff is missing, rest is finished
-    #finishing on DreamKekHunters screen and then getting it done for my side
-
-
+    # bitMapInfoBody 54: -
+    secret = TextSecret.get('1.0', 'end')[:-1] # get secrettext
+    print(secret)
+    if len(file_content) - 54 < len(secret) * 8: # check length from secret and bitmap
+        pass
+    new_list = []
+    # iterate secret to convert to a list of the bits
+    for item in list(secret):
+        item_binary = list(bin(ord(item)).replace("0b", ""))
+        for i in range(0, 8 - len(item_binary)):
+            item_binary.append(1)
+        print(item_binary)
+        print(len(item_binary))
+        for i in range(8):
+            new_list.append(item_binary[2 + i])
+    print(new_list)
 
 
 # This function is invoked when the user presses
