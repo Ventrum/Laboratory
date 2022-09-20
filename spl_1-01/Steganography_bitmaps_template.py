@@ -124,9 +124,12 @@ def ButtonModeHideClick():
     print(height)
     print(file_content[26:28])
     if file_content[28] != 24 or file_content[29] != 24:
+        LabelModeFeedback["text"] = "the bmp file is not a 24 bit bmp file, pls resave it!"
         pass
     if file_content[30] == 0: # 30:33
-        pass
+        print("ok")
+    else:
+        LabelModeFeedback["text"] = "Compression detected, we are not allowing compression!"
     print(file_content[34:46])
     if file_content[46] == 0: # 46:49
         pass
@@ -142,6 +145,37 @@ def ButtonModeHideClick():
 ###### ENTER YOUR CODE HERE ######
 def ButtonModeDiscloseClick():
     ClearFeedbackLabels()
+    try:
+        file = open("GalaxienHiding.bmp", "rb")
+        data = list(file.read())
+    except:
+        LabelModeFeedback["text"] = "Could not open file or/and read it!"
+        if data[0] != 66 and data[1] != 77:
+            LabelModeFeedback["text"] = "The opened file is not a bmp file!"
+
+        print(data[2:10], "ignoring those 4x2 bytes")
+        bfOffBits = data[10:14]
+        print(data[14:18, "ignoring those 4 bytes"])
+        bi_width = data[18:22]
+        print(bi_width)
+        bi_height = data[22:26]
+        print(bi_height)
+        print(data[26:28], "ignoring biPlanes")
+        if data[28] != 24 or data[29] != 24:
+            LabelModeFeedback["text"] = "the bmp file is not a 24 bit bmp file, pls resave it!"
+            pass
+        if data[30] == 0:  # 30:33
+            print("biCompression is ok")
+        else:
+            LabelModeFeedback["text"] = "Compression detected, we are not allowing compression!"
+        print(data[34:46])
+        if data[46] == 0:  # 46:49
+            print("biClrUsed is ok")
+        else:
+            LabelModeFeedback["text"] = "Colored tables detected, we are not allowing colored tables!"
+        print(data[50:54])
+        # bitMapInfoBody
+
     pass
 
 
