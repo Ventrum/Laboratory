@@ -135,7 +135,8 @@ def ButtonModeHideClick():
         pass
     print(file_content[50:54])
     #bitMapInfoBody
-    
+    #the secret stuff is missing, rest is finished
+    #finishing on DreamKekHunters screen and then getting it done for my side
 
 
 
