@@ -107,14 +107,18 @@ def ButtonModeHideClick():
         file_content = list(file.read())
     except:
         LabelModeFeedback["text"] = "Could not read the specific file or/and hasn't been converted to binary!"
+    #bitmapfileheader 0:13
     if file_content[0] != 66 and file_content[1] != 77:
         LabelModeFeedback["text"] = "File is not a .bmp"
         pass
-    print(file_content[0:1])
-    print(file_content[2:3])
-    print(file_content[4:9])
+    print(file_content[0:2])
+    print(file_content[2:6])
+    print(file_content[6:10])
     bf_off_bits = file_content[10:14]
     print(bf_off_bits)
+    # bitmapinfoheader 14:39
+    width = file_content[14:18]
+    height = file_content[18:22]
 
 
 # This function is invoked when the user presses
