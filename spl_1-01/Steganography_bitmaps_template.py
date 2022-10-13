@@ -104,6 +104,7 @@ def ButtonModeHideClick():
     ClearFeedbackLabels()
     try:
         file = open("Galaxien.bmp", "rb")
+        print(file.read())
         file_content = list(file.read())
     except:
         LabelModeFeedback["text"] = "Could not read the specific file or/and hasn't been converted to binary!"
@@ -132,21 +133,35 @@ def ButtonModeHideClick():
         pass
     print(file_content[50:54])
     # bitMapInfoBody 54: -
-    secret = TextSecret.get('1.0', 'end')[:-1] # get secrettext
+    print("test")
+    secret = TextSecret.get('1.0', 'end')[:-1]  # get secret text
     print(secret)
-    if len(file_content) - 54 < len(secret) * 8: # check length from secret and bitmap
+    if len(file_content) - 54 < len(secret) * 8:  # check length from secret and bitmap
         pass
     new_list = []
     # iterate secret to convert to a list of the bits
-    for item in list(secret):
-        item_binary = list(bin(ord(item)).replace("0b", ""))
-        for i in range(0, 8 - len(item_binary)):
-            item_binary.append(1)
-        print(item_binary)
-        print(len(item_binary))
-        for i in range(8):
-            new_list.append(item_binary[2 + i])
-    print(new_list)
+    for item in list(secret):  # iterate secret letter for letter
+        item_binary = list(bin(ord(item)).replace("0b", ""))  # convert letter to binary
+        # when binary-letter has less than 8 bits, filling up to 8 bits
+        [item_binary.insert(0, '0') for i in range(0, 8 - len(item_binary))]
+        [new_list.append(ib) for ib in item_binary]  # add bits to list
+    for i in range(len(new_list)):
+        fc = ['0'] * 8
+        temp = list(reversed(list(bin(file_content[54 + i]).replace("0b", ""))))
+        for j in range(len(temp)):
+            fc[j] = temp[j]
+        fc = list(reversed(fc))
+        fc[-1] = new_list[i]
+        n = 0
+        for j in range(len(fc)):
+            n = n + int(list(reversed(fc))[j]) * 2 ** j
+        file_content[54 + i] = n
+    print(file.name)
+    try:
+        new_file_name_list = file.name.split(".")
+        new_file = open(""+new_file_name_list[0]+"Hiding"+new_file_name_list[1], "w")
+    except:
+        print("lol")
 
 
 # This function is invoked when the user presses
