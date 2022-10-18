@@ -104,11 +104,12 @@ def ButtonModeHideClick():
     ClearFeedbackLabels()
     try:
         file = open("Galaxien.bmp", "rb")
-        print(file.read())
+        #print(file.read())
         file_content = list(file.read())
     except:
         LabelModeFeedback["text"] = "Could not read the specific file or/and hasn't been converted to binary!"
     # bitmapfileheader 0:13
+
     if file_content[0] != 66 and file_content[1] != 77:
         LabelModeFeedback["text"] = "File is not a .bmp"
         pass
@@ -158,10 +159,15 @@ def ButtonModeHideClick():
         file_content[54 + i] = n
     print(file.name)
     try:
+        #print(bytes(file_content))
+
         new_file_name_list = file.name.split(".")
-        new_file = open(""+new_file_name_list[0]+"Hiding"+new_file_name_list[1], "w")
-    except:
-        print("lol")
+        new_file = open(""+new_file_name_list[0]+"Hiding."+new_file_name_list[1], "wb")
+        print(new_file.name)
+        new_file.write(bytes(file_content))
+
+    except Exception as e:
+        print(e)
 
 
 # This function is invoked when the user presses
