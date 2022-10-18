@@ -111,20 +111,33 @@ def ButtonModeHideClick():
     # bitmapfileheader 0:13
     if file_content[0] != 66 and file_content[1] != 77:
         LabelModeFeedback["text"] = "File is not a .bmp"
-        pass
+        return
     bf_off_bits = file_content[10:14]
     # bitmapinfoheader 14:39
     width = file_content[18:22]
     height = file_content[22:26]
     if file_content[28] != 24 or file_content[29] != 24:
-        pass
-    if file_content[30] == 0:  # 30:33
-        pass
-    if file_content[46] == 0:  # 46:49
-        pass
+        LabelModeFeedback["text"] = "Bitmap doesn't have the needed color depth. color depth 24 is needed."
+        return
+    if file_content[30] != 0:  # 30:33
+        LabelModeFeedback["text"] = "Bitmap isn't allowed to be compressed."
+        return
+    if file_content[46] != 0:  # 46:49
+        LabelModeFeedback["text"] = "Bitmap isn't allowed to have a colortable."  #
+        return
     # bitMapInfoBody 54: -
     secret = TextSecret.get('1.0', 'end')[:-1]  # get secret text
     if len(file_content) - 54 < len(secret) * 8:  # check length from secret and bitmap
+        LabelModeFeedback["text"] = "Secret hasn't enough space in the bitmap! Bitmap is " \
+                                    + str(len(file_content) - 54 - len(secret) * 8) + " bit/s to short"
+        return
+    fits = False
+    if len(file_content) - 54 == len(secret) * 8:
+        fits = True
+    elif len(file_content) - 54 < len(secret) * 8 + 8:
+        LabelModeFeedback["text"] = \
+            "Secret hasn't enough space including the 8-end-characters in the bitmap! Bitmap is " \
+            + str(len(file_content) - 54 - len(secret) * 8 - 8) + " bit/s to short"
         return
     new_list = []
     # iterate secret to convert to a list of the bits
@@ -132,46 +145,32 @@ def ButtonModeHideClick():
         item_binary = list(bin(ord(item)).replace("0b", ""))  # convert letter to binary
         # when binary-letter has less than 8 bits, filling up to 8 bits
         [item_binary.insert(0, '0') for i in range(0, 8 - len(item_binary))]
-        [new_list.append(ib) for ib in item_binary]  # add bits to list
+        [new_list.append(ib) for ib in reversed(item_binary)]  # add bits to list
         blank = 0
         width_dez_value = 0
         for g in range(len(width)):
             width_dez_value += width[g] * 255 ** g
+        if not fits:
+            new_list = new_list + ['0'] * 8
     for i in range(len(new_list)):
         b = False
-        if (width_dez_value * 3) % 4 is not 0 and i % (width_dez_value * 3) is 0 and i is not 0:
-            blank += (4 - ((width_dez_value * 3) % 4))
-            print("blank" + str(blank))
-            print(i)
-            print(file_content[51 + i + blank])
-            print(file_content[52 + i + blank])
-            print(file_content[53 + i + blank])
-            print(file_content[54 + i + blank])
-            b = True
         fc = ['0'] * 8
         temp = list(reversed(list(bin(file_content[54 + i + blank]).replace("0b", ""))))
         for j in range(len(temp)):
             fc[j] = temp[j]
-        # fc = list(reversed(fc))  # depending on en
-        fc[-1] = new_list[i + blank]
+        fc = list(reversed(fc))  # depending on hiding direction
+        fc[-1] = new_list[i]
         n = 0
         for j in range(len(fc)):
             n = n + int(list(reversed(fc))[j]) * 2 ** j
         file_content[54 + i + blank] = n
-        if b:
-            print("blank" + str(blank))
-            print(i)
-            print(file_content[51 + i + blank])
-            print(file_content[52 + i + blank])
-            print(file_content[53 + i + blank])
-            print(file_content[54 + i + blank])
-            b = False
     try:
         new_file_name_list = file.name.split(".")
         new_file = open("" + new_file_name_list[0] + "Hiding." + new_file_name_list[1], "wb")
         new_file.write(bytes(file_content))
-    except Exception as e:
-        print(e)
+    except:
+        LabelModeFeedback["text"] = \
+            "" + new_file_name_list[0] + "Hiding." + new_file_name_list[1] + " cannot be created."
 
 
 # This function is invoked when the user presses
